@@ -4,6 +4,9 @@ import com.task.demo.DTOs.UserDTO;
 import com.task.demo.DTOs.UserFilterDTO;
 import com.task.demo.DTOs.UserUIDTO;
 import com.task.demo.entities.User;
+import com.task.demo.exceptions.BaseException;
+import com.task.demo.exceptions.ErrorMessage;
+import com.task.demo.exceptions.ErrorsType;
 import com.task.demo.repository.UserRepository;
 import com.task.demo.services.IUserServcie;
 import com.task.demo.specification.UserSpecification;
@@ -56,7 +59,7 @@ public class UserServiceImpl implements IUserServcie {
             BeanUtils.copyProperties(user,userDTO);
             return userDTO;
         }
-        return null;
+        throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
     }
 
     @Override
@@ -71,6 +74,7 @@ public class UserServiceImpl implements IUserServcie {
         if(userOptional.isPresent()){
             userRepository.deleteById(id);
         }
+        throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
 
     }
 

@@ -1,4 +1,4 @@
-package com.task.demo.DTOs;
+package com.task.demo.DTOs.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

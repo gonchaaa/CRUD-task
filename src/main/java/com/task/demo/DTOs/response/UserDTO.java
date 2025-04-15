@@ -1,4 +1,4 @@
-package com.task.demo.DTOs;
+package com.task.demo.DTOs.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

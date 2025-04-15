@@ -1,6 +1,6 @@
 package com.task.demo.specification;
 
-import com.task.demo.DTOs.UserFilterDTO;
+import com.task.demo.DTOs.filter.UserFilterDTO;
 import com.task.demo.entities.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -25,12 +25,12 @@ public class UserSpecification implements Specification<User> {
 
 
         if (userFilterDTO.getFirstName() != null && !userFilterDTO.getFirstName().isEmpty()) {
-            predicates.add(cb.like(root.get("firstName"),userFilterDTO.getFirstName()));
+            predicates.add(cb.like(cb.lower(root.get("firstName")),  "%" +userFilterDTO.getFirstName().toLowerCase() + "%" ));
         }
 
 
         if (userFilterDTO.getLastName() != null && !userFilterDTO.getLastName().isEmpty()) {
-            predicates.add(cb.like(root.get("lastName"),userFilterDTO.getLastName()));
+            predicates.add(cb.like(cb.lower(root.get("lastName")),  "%" +userFilterDTO.getLastName().toLowerCase() + "%" ));
         }
 
         if (userFilterDTO.getAge() != null) {

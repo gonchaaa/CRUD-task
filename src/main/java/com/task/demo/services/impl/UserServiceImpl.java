@@ -1,8 +1,8 @@
 package com.task.demo.services.impl;
 
-import com.task.demo.DTOs.UserDTO;
-import com.task.demo.DTOs.UserFilterDTO;
-import com.task.demo.DTOs.UserUIDTO;
+import com.task.demo.DTOs.response.UserDTO;
+import com.task.demo.DTOs.filter.UserFilterDTO;
+import com.task.demo.DTOs.request.UserUIDTO;
 import com.task.demo.entities.User;
 import com.task.demo.exceptions.BaseException;
 import com.task.demo.exceptions.ErrorMessage;
@@ -69,10 +69,11 @@ public class UserServiceImpl implements IUserServcie {
     }
 
     @Override
-    public void deleteUserById(Integer id) {
+    public String deleteUserById(Integer id) {
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isPresent()){
             userRepository.deleteById(id);
+            return  "success";
         }
         throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
 
@@ -96,6 +97,7 @@ public class UserServiceImpl implements IUserServcie {
             return userDTO;
 
         }
-        return null;
+        throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
+
     }
 }

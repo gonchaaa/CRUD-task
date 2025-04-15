@@ -1,13 +1,12 @@
 package com.task.demo.controller.impl;
 
-import com.task.demo.DTOs.UserDTO;
-import com.task.demo.DTOs.UserFilterDTO;
-import com.task.demo.DTOs.UserUIDTO;
+import com.task.demo.DTOs.response.UserDTO;
+import com.task.demo.DTOs.filter.UserFilterDTO;
+import com.task.demo.DTOs.request.UserUIDTO;
 import com.task.demo.controller.IUserController;
 import com.task.demo.entities.User;
 import com.task.demo.services.IUserServcie;
 import jakarta.validation.Valid;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,8 +55,9 @@ public class UserControllerImpl implements IUserController {
 
     @DeleteMapping("/delete/{id}")
     @Override
-    public void deleteUserById(@PathVariable(name = "id") Integer id) {
-        userServcie.deleteUserById(id);
+    public String deleteUserById(@PathVariable(name = "id") Integer id) {
+
+       return userServcie.deleteUserById(id);
     }
     @PutMapping("/update/{id}")
     @Override

@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -20,7 +22,7 @@ public class User {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "first_name",nullable = false,unique = true)
     private String firstName;
@@ -37,4 +39,12 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "birth_Date",nullable = true)
     private Date birthDate;
+    @ManyToMany
+    @JoinTable(
+            name = "user_branch",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "branch_id")
+    )
+    private List<Branch> branches = new ArrayList<>();
+
 }

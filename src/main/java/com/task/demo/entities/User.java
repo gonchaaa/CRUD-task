@@ -2,6 +2,8 @@ package com.task.demo.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.task.demo.enums.CurrencyType;
+import com.task.demo.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -33,18 +35,16 @@ public class User {
     @Column(name = "age",nullable = false)
     private Integer age;
 
+    @Email(message = "email duzgun deyil")
     @Column(name = "email",nullable = false)
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "birth_Date",nullable = true)
     private Date birthDate;
-    @ManyToMany
-    @JoinTable(
-            name = "user_branch",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "branch_id")
-    )
-    private List<Branch> branches = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role",nullable = false)
+
+    private Role role;
 
 }

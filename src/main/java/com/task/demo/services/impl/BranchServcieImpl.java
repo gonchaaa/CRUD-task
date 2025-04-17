@@ -8,10 +8,11 @@ import com.task.demo.exceptions.BaseException;
 import com.task.demo.exceptions.ErrorMessage;
 import com.task.demo.exceptions.ErrorsType;
 import com.task.demo.repository.BranchRepository;
-import com.task.demo.services.IBranchService;
+import com.task.demo.services.BranchService;
 import com.task.demo.specification.BranchSpecification;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,19 +20,26 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BranchServcieImpl implements IBranchService {
+public class BranchServcieImpl implements BranchService {
 
     @Autowired
     private BranchRepository branchRespository;
 
     @Override
     public BranchDTO saveBranch(BranchUIDTO branchUIDTO) {
-        BranchDTO branchDTO = new BranchDTO();
-        Branch branch = new Branch();
-        BeanUtils.copyProperties(branchUIDTO,branch);
-        Branch dbBranch = branchRespository.save(branch);
-        BeanUtils.copyProperties(dbBranch,branchDTO);
-        return branchDTO;
+
+            BranchDTO branchDTO = new BranchDTO();
+            Branch branch = new Branch();
+        try {
+            BeanUtils.copyProperties(branchUIDTO,branch);
+            Branch dbBranch = branchRespository.save(branch);
+            BeanUtils.copyProperties(dbBranch,branchDTO);
+            return branchDTO;
+        }catch (DataIntegrityViolationException e){
+            throw new BaseException(new ErrorMessage(ErrorsType.INVALID_DATA,
+                    "Verilən məlumatlarla qeydiyyat mümkün olmadı. Məlumatları yoxlayın: " + e.getMostSpecificCause().getMessage()));
+        }
+
     }
 
     @Override

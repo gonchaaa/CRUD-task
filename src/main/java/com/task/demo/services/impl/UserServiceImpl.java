@@ -4,11 +4,12 @@ import com.task.demo.DTOs.response.UserDTO;
 import com.task.demo.DTOs.filter.UserFilterDTO;
 import com.task.demo.DTOs.request.UserUIDTO;
 import com.task.demo.entities.User;
+import com.task.demo.enums.Role;
 import com.task.demo.exceptions.BaseException;
 import com.task.demo.exceptions.ErrorMessage;
 import com.task.demo.exceptions.ErrorsType;
 import com.task.demo.repository.UserRepository;
-import com.task.demo.services.IUserServcie;
+import com.task.demo.services.UserServcie;
 import com.task.demo.specification.UserSpecification;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 
 @Service
-public class UserServiceImpl implements IUserServcie {
+public class UserServiceImpl implements UserServcie {
 
     @Autowired
     private UserRepository userRepository;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements IUserServcie {
         UserDTO userDTO = new UserDTO();
         User user = new User();
         BeanUtils.copyProperties(userUIDTO,user);
+        user.setRole(Role.USER);
         User dbUser = userRepository.save(user);
         BeanUtils.copyProperties(dbUser,userDTO);
         return userDTO;

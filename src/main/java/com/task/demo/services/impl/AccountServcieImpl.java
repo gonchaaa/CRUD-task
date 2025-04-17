@@ -15,12 +15,14 @@ import com.task.demo.exceptions.ErrorsType;
 import com.task.demo.repository.AccountRepository;
 import com.task.demo.repository.BranchRepository;
 import com.task.demo.repository.UserRepository;
-import com.task.demo.services.IAccountServcie;
+import com.task.demo.services.AccountServcie;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +35,7 @@ import java.util.Optional;
 import static com.task.demo.generator.AccountGeneretor.generatorAccountNumber;
 
 @Service
-public class AccountServcieImpl implements IAccountServcie {
+public class AccountServcieImpl implements AccountServcie {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -44,7 +46,7 @@ public class AccountServcieImpl implements IAccountServcie {
     private BranchRepository branchRepository;
 
     @Override
-    public AccountDTO saveAccount(AccountInsertDTO accountInsertDTO) {
+    public AccountDTO saveAccount(@Valid AccountInsertDTO accountInsertDTO) {
         User user = userRepository.findById(Math.toIntExact(accountInsertDTO.getUserId())).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
         Branch branch = branchRepository.findById(accountInsertDTO.getBranchId()).orElseThrow(() -> new EntityNotFoundException("Bele bir filial yoxdur"));
 
@@ -57,8 +59,6 @@ public class AccountServcieImpl implements IAccountServcie {
             account.setUser(user);
             account.setBranch(branch);
             account.setAccountNumber(generatorAccountNumber());
-
-
             account.setStatus(Status.PENDING);
             account.setBalance(BigDecimal.ZERO);
             account.setCurrencyType(CurrencyType.AZN);
@@ -77,6 +77,9 @@ public class AccountServcieImpl implements IAccountServcie {
                 throw new BaseException(new ErrorMessage(ErrorsType.UNIQUE_CONSTRAINT,
                         account.getIban()));
             }
+            catch ( EntityNotFoundException e) {
+                throw new BaseException(new ErrorMessage(ErrorsType.INVALID_DATA, account.getIban()));
+            }
 
 
 
@@ -86,6 +89,8 @@ public class AccountServcieImpl implements IAccountServcie {
     @Override
     public AccountDTO updatedAccount(Long id, AccountUpdateDTO accountUpdateDTO) {
         AccountDTO accountDTO = new AccountDTO();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().iterator().next().getAuthority();
         Optional<Account> accountOptional = accountRepository.findById(id);
         if(accountOptional.isPresent()){
             Account account = accountOptional.get();
@@ -94,7 +99,10 @@ public class AccountServcieImpl implements IAccountServcie {
          account.setBalance(accountUpdateDTO.getBalance());
          account.setCurrencyType(accountUpdateDTO.getCurrencyType());
          account.setExpiredDate(accountUpdateDTO.getExpiredDate());
-         account.setStatus(accountUpdateDTO.getStatus());
+            if ("ADMIN".equals(role)) {
+                account.setStatus(accountUpdateDTO.getStatus());
+            }
+
          accountDTO.setUserId(account.getUser().getId());
          accountDTO.setBranchId(account.getBranch().getId());
 

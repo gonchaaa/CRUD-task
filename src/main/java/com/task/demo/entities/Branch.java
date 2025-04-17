@@ -23,8 +23,7 @@ public class Branch {
     private String branchName;
     @Column(nullable = false)
     private String branchAddress;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private Integer branchCode;
-    @ManyToMany(mappedBy = "branches")
-    private List<User> user =  new ArrayList<>();
+
 }

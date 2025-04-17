@@ -20,7 +20,7 @@ public class UserUIDTO {
     private String firstName;
     @NotBlank(message = "lastName bos ola bilmez")
     private String lastName;
-    @Min(value = 18, message = "yasdan 18-den yuxari olmalidir")
+    @Min(value = 18, message = "yas 18-den yuxari olmalidir")
     private Integer age;
     @Email(message = "email duzgun deyil")
     private String email;

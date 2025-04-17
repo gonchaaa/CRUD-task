@@ -7,7 +7,7 @@ import com.task.demo.entities.User;
 
 import java.util.List;
 
-public interface IUserServcie {
+public interface UserServcie {
      UserDTO saveUser(UserUIDTO userUIDTO);
      List<UserDTO> getAllUsers();
      UserDTO getUserById(Integer id);

@@ -2,6 +2,8 @@ package com.task.demo.DTOs.response;
 
 import com.task.demo.enums.CurrencyType;
 import com.task.demo.enums.Status;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

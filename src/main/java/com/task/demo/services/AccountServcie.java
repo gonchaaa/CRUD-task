@@ -7,7 +7,7 @@ import com.task.demo.DTOs.response.AccountDTO;
 
 import java.util.List;
 
-public interface IAccountServcie {
+public interface AccountServcie {
    AccountDTO saveAccount(AccountInsertDTO accountUIDTO);
    AccountDTO updatedAccount(Long id, AccountUpdateDTO accountUpdateDTO);
    AccountDTO getAccountById(Long id);

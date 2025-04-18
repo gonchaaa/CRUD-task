@@ -16,12 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/token")
 public class TokenController {
-    @Autowired
+
     private final UserRepository userRepository;
-    @Autowired
     private final JwtService jwtService;
 
-    @GetMapping("/{email}")
+    @GetMapping()
     public ResponseEntity<?> getToken(@PathVariable String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {

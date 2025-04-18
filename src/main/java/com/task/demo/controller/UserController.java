@@ -6,6 +6,7 @@ import com.task.demo.DTOs.request.UserUIDTO;
 import com.task.demo.entities.User;
 import com.task.demo.services.UserServcie;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest/api/user")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserServcie userServcie;
+    private final UserServcie userServcie;
 
-
-    @PostMapping(path = "/save")
+    @PostMapping()
     public UserDTO saveUser(@RequestBody @Valid UserUIDTO userUIDTO) {
         return userServcie.saveUser(userUIDTO);
     }
@@ -48,12 +48,13 @@ public class UserController {
         return userServcie.getUserFilter(userFilterDTO);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public String deleteUserById(@PathVariable(name = "id") Integer id) {
 
        return userServcie.deleteUserById(id);
     }
-    @PutMapping("/update/{id}")
+
+    @PutMapping("/{id}")
     public UserDTO updateUser(@PathVariable(name = "id") Integer id,@RequestBody UserUIDTO userUIDTO) {
     return userServcie.updateUser(id, userUIDTO);
     }

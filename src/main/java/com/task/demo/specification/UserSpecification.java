@@ -6,18 +6,17 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class UserSpecification implements Specification<User> {
 
     private final UserFilterDTO userFilterDTO;
 
-    public UserSpecification(UserFilterDTO userFilterDTO) {
-        this.userFilterDTO = userFilterDTO;
-    }
 
     @Override
     public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {

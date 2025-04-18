@@ -11,8 +11,8 @@ import com.task.demo.exceptions.ErrorsType;
 import com.task.demo.repository.UserRepository;
 import com.task.demo.services.UserServcie;
 import com.task.demo.specification.UserSpecification;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,20 +21,23 @@ import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserServcie {
 
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public UserDTO saveUser(UserUIDTO userUIDTO) {
 
         UserDTO userDTO = new UserDTO();
         User user = new User();
-        BeanUtils.copyProperties(userUIDTO,user);
+        modelMapper.map(userUIDTO,user);
+
         user.setRole(Role.USER);
         User dbUser = userRepository.save(user);
-        BeanUtils.copyProperties(dbUser,userDTO);
+        modelMapper.map(dbUser,userDTO);
         return userDTO;
     }
 
@@ -44,7 +47,8 @@ public class UserServiceImpl implements UserServcie {
         List<User> users = userRepository.findAll();
         for (User user : users) {
             UserDTO userDTO = new UserDTO();
-            BeanUtils.copyProperties(user,userDTO);
+            modelMapper.map(user,userDTO);
+
             userDTOList.add(userDTO);
         }
     return userDTOList;
@@ -58,7 +62,8 @@ public class UserServiceImpl implements UserServcie {
         if(userOptional.isPresent()){
             UserDTO userDTO = new UserDTO();
             User user = userOptional.get();
-            BeanUtils.copyProperties(user,userDTO);
+            modelMapper.map(user,userDTO);
+
             return userDTO;
         }
         throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
@@ -95,7 +100,8 @@ public class UserServiceImpl implements UserServcie {
            user.setAge(userUIDTO.getAge());
 
             User updatedUser = userRepository.save(user);
-            BeanUtils.copyProperties(updatedUser,userDTO);
+            modelMapper.map(updatedUser,userDTO);
+
             return userDTO;
 
         }

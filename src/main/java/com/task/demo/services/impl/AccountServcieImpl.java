@@ -18,8 +18,8 @@ import com.task.demo.repository.UserRepository;
 import com.task.demo.services.AccountServcie;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,26 +35,24 @@ import java.util.Optional;
 import static com.task.demo.generator.AccountGeneretor.generatorAccountNumber;
 
 @Service
+@RequiredArgsConstructor
 public class AccountServcieImpl implements AccountServcie {
 
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private BranchRepository branchRepository;
+    private final AccountRepository accountRepository;
+
+    private final UserRepository userRepository;
+
+    private final BranchRepository branchRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public AccountDTO saveAccount(@Valid AccountInsertDTO accountInsertDTO) {
         User user = userRepository.findById(Math.toIntExact(accountInsertDTO.getUserId())).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
         Branch branch = branchRepository.findById(accountInsertDTO.getBranchId()).orElseThrow(() -> new EntityNotFoundException("Bele bir filial yoxdur"));
 
-
-
             Account account = new Account();
-
-            BeanUtils.copyProperties(accountInsertDTO, account);
+            modelMapper.map(accountInsertDTO, account);
 
             account.setUser(user);
             account.setBranch(branch);
@@ -68,10 +66,10 @@ public class AccountServcieImpl implements AccountServcie {
 
 
                 AccountDTO accountDTO = new AccountDTO();
-                BeanUtils.copyProperties(dbAccount, accountDTO);
-                accountDTO.setUserId(user.getId());
-                accountDTO.setBranchId(branch.getId());
-
+                modelMapper.map(dbAccount, accountDTO);
+//                accountDTO.setUserId(user.getId());
+//                accountDTO.setBranchId(branch.getId());
+                mapperAcoountDTO(account);
                 return accountDTO;
             }catch (DataIntegrityViolationException e) {
                 throw new BaseException(new ErrorMessage(ErrorsType.UNIQUE_CONSTRAINT,
@@ -103,11 +101,12 @@ public class AccountServcieImpl implements AccountServcie {
                 account.setStatus(accountUpdateDTO.getStatus());
             }
 
-         accountDTO.setUserId(account.getUser().getId());
-         accountDTO.setBranchId(account.getBranch().getId());
+//         accountDTO.setUserId(account.getUser().getId());
+//         accountDTO.setBranchId(account.getBranch().getId());
+            mapperAcoountDTO(account);
 
             Account updatedAccount = accountRepository.save(account);
-            BeanUtils.copyProperties(updatedAccount,accountDTO);
+            modelMapper.map(updatedAccount, accountDTO);
             return accountDTO;
 
         }
@@ -118,12 +117,12 @@ public class AccountServcieImpl implements AccountServcie {
     public AccountDTO getAccountById(Long id) {
         Optional<Account> accountOptional = accountRepository.findById(id);
         if(accountOptional.isPresent()){
-            AccountDTO accountDTO = new AccountDTO();
+//            AccountDTO accountDTO = new AccountDTO();
             Account account = accountOptional.get();
-            BeanUtils.copyProperties(account,accountDTO);
-            accountDTO.setUserId(account.getUser().getId());
-            accountDTO.setBranchId(account.getBranch().getId());
-            return accountDTO;
+//            modelMapper.map(account, accountDTO);
+//            accountDTO.setUserId(account.getUser().getId());
+//            accountDTO.setBranchId(account.getBranch().getId());
+            return mapperAcoountDTO(account);
         }
         throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
     }
@@ -134,10 +133,11 @@ public class AccountServcieImpl implements AccountServcie {
         List<Account> accounts = accountRepository.findAll();
         for (Account account : accounts) {
             AccountDTO accountDTO = new AccountDTO();
-            BeanUtils.copyProperties(account,accountDTO);
-            accountDTO.setUserId(account.getUser().getId());
-            accountDTO.setBranchId(account.getBranch().getId());
+            modelMapper.map(account,accountDTO);
+//            accountDTO.setUserId(account.getUser().getId());
+//            accountDTO.setBranchId(account.getBranch().getId());
             accountDTOList.add(accountDTO);
+            accountDTOList.add(mapperAcoountDTO(account));
         }
         return accountDTOList;
     }
@@ -149,10 +149,11 @@ public class AccountServcieImpl implements AccountServcie {
         List<Account> accounts = accountRepository.findAllByUser(user);
         for (Account account : accounts) {
             AccountDTO accountDTO = new AccountDTO();
-            BeanUtils.copyProperties(account,accountDTO);
-            accountDTO.setUserId(account.getUser().getId());
-            accountDTO.setBranchId(account.getBranch().getId());
+            modelMapper.map(account, accountDTO);
+//            accountDTO.setUserId(account.getUser().getId());
+//            accountDTO.setBranchId(account.getBranch().getId());
             accountDTOList.add(accountDTO);
+            accountDTOList.add(mapperAcoountDTO(account));
         }
         return accountDTOList;
     }
@@ -169,15 +170,15 @@ public class AccountServcieImpl implements AccountServcie {
                 .orElseThrow(() -> new EntityNotFoundException("Qebul eden hesab tapilmadi"));
 
         if (fromAccount.getStatus() == Status.PENDING || fromAccount.getStatus() == Status.BLOCKED) {
-            throw new BaseException(new ErrorMessage(ErrorsType.INVALID_OPERATION, fromAccount.getIban().toString()));
+            throw new BaseException(new ErrorMessage(ErrorsType.INVALID_OPERATION, fromAccount.getIban()));
         }
         if (toAccount.getStatus() == Status.PENDING || toAccount.getStatus() == Status.BLOCKED) {
-            throw new BaseException(new ErrorMessage(ErrorsType.INVALID_OPERATION, toAccount.getIban().toString()));
+            throw new BaseException(new ErrorMessage(ErrorsType.INVALID_OPERATION, toAccount.getIban()));
         }
 
         if(fromAccount.getBalance().compareTo(BigDecimal.ZERO) == 0 ||
                 fromAccount.getBalance().compareTo(accountTransferDTO.getAmount()) < 0 ) {
-           throw new BaseException(new ErrorMessage(ErrorsType.NO_BALANCE, fromAccount.getIban().toString()));
+           throw new BaseException(new ErrorMessage(ErrorsType.NO_BALANCE, fromAccount.getIban()));
         }
 
         fromAccount.setBalance(fromAccount.getBalance().subtract(accountTransferDTO.getAmount()));
@@ -185,5 +186,14 @@ public class AccountServcieImpl implements AccountServcie {
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
         return "Success transfer";
+    }
+
+
+    private AccountDTO mapperAcoountDTO(Account account) {
+        AccountDTO accountDTO = new AccountDTO();
+        modelMapper.map(account, accountDTO);
+        accountDTO.setUserId(account.getUser().getId());
+        accountDTO.setBranchId(account.getBranch().getId());
+        return accountDTO;
     }
 }

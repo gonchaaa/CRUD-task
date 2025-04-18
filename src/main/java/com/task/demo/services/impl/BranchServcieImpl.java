@@ -10,8 +10,8 @@ import com.task.demo.exceptions.ErrorsType;
 import com.task.demo.repository.BranchRepository;
 import com.task.demo.services.BranchService;
 import com.task.demo.specification.BranchSpecification;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +20,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BranchServcieImpl implements BranchService {
 
-    @Autowired
-    private BranchRepository branchRespository;
+
+    private final BranchRepository branchRespository;
+    private final ModelMapper modelMapper;
 
     @Override
     public BranchDTO saveBranch(BranchUIDTO branchUIDTO) {
@@ -31,9 +33,9 @@ public class BranchServcieImpl implements BranchService {
             BranchDTO branchDTO = new BranchDTO();
             Branch branch = new Branch();
         try {
-            BeanUtils.copyProperties(branchUIDTO,branch);
+            modelMapper.map(branchUIDTO,branch);
             Branch dbBranch = branchRespository.save(branch);
-            BeanUtils.copyProperties(dbBranch,branchDTO);
+            modelMapper.map(dbBranch,branchDTO);
             return branchDTO;
         }catch (DataIntegrityViolationException e){
             throw new BaseException(new ErrorMessage(ErrorsType.INVALID_DATA,
@@ -48,7 +50,8 @@ public class BranchServcieImpl implements BranchService {
         List<Branch> branches = branchRespository.findAll();
         for (Branch branch : branches) {
             BranchDTO branchDTO = new BranchDTO();
-            BeanUtils.copyProperties(branch,branchDTO);
+            modelMapper.map(branch,branchDTO);
+
             branchDTOList.add(branchDTO);
         }
         return branchDTOList;
@@ -60,7 +63,8 @@ public class BranchServcieImpl implements BranchService {
         if(branchOptional.isPresent()){
             BranchDTO branchDTO = new BranchDTO();
             Branch branch = branchOptional.get();
-            BeanUtils.copyProperties(branch,branchDTO);
+            modelMapper.map(branch,branchDTO);
+
             return branchDTO;
         }
         throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
@@ -95,7 +99,7 @@ public class BranchServcieImpl implements BranchService {
             branch.setBranchAddress(branchUIDTO.getBranchAddress());
 
             Branch updatedBranch = branchRespository.save(branch);
-            BeanUtils.copyProperties(updatedBranch,branchDTO);
+            modelMapper.map(updatedBranch,branchDTO);
             return branchDTO;
 
         }

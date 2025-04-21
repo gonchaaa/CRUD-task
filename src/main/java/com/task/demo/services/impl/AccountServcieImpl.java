@@ -51,7 +51,6 @@ public class AccountServcieImpl implements AccountServcie {
         User user = userRepository.findById(accountInsertDTO.getUserId()).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
         Branch branch = branchRepository.findById(accountInsertDTO.getBranchId()).orElseThrow(() -> new EntityNotFoundException("Bele bir filial yoxdur"));
             Account account = new Account();
-//            modelMapper.map(accountInsertDTO, account);
             account.setIban(accountInsertDTO.getIban());
             account.setUser(user);
             account.setBranch(branch);
@@ -66,8 +65,6 @@ public class AccountServcieImpl implements AccountServcie {
 
                 AccountDTO accountDTO = new AccountDTO();
                 modelMapper.map(dbAccount, accountDTO);
-//                accountDTO.setUserId(user.getId());
-//                accountDTO.setBranchId(branch.getId());
                 mapperAcoountDTO(account);
                 return accountDTO;
             }catch (DataIntegrityViolationException e) {
@@ -99,9 +96,6 @@ public class AccountServcieImpl implements AccountServcie {
             if ("ADMIN".equals(role)) {
                 account.setStatus(accountUpdateDTO.getStatus());
             }
-
-//         accountDTO.setUserId(account.getUser().getId());
-//         accountDTO.setBranchId(account.getBranch().getId());
             mapperAcoountDTO(account);
 
             Account updatedAccount = accountRepository.save(account);
@@ -116,11 +110,7 @@ public class AccountServcieImpl implements AccountServcie {
     public AccountDTO getAccountById(Long id) {
         Optional<Account> accountOptional = accountRepository.findById(id);
         if(accountOptional.isPresent()){
-//            AccountDTO accountDTO = new AccountDTO();
             Account account = accountOptional.get();
-//            modelMapper.map(account, accountDTO);
-//            accountDTO.setUserId(account.getUser().getId());
-//            accountDTO.setBranchId(account.getBranch().getId());
             return mapperAcoountDTO(account);
         }
         throw new BaseException(new ErrorMessage(ErrorsType.NO_DATA_FOUND,id.toString()));
@@ -133,8 +123,6 @@ public class AccountServcieImpl implements AccountServcie {
         for (Account account : accounts) {
             AccountDTO accountDTO = new AccountDTO();
             modelMapper.map(account,accountDTO);
-//            accountDTO.setUserId(account.getUser().getId());
-//            accountDTO.setBranchId(account.getBranch().getId());
             accountDTOList.add(accountDTO);
             accountDTOList.add(mapperAcoountDTO(account));
         }
@@ -149,8 +137,6 @@ public class AccountServcieImpl implements AccountServcie {
         for (Account account : accounts) {
             AccountDTO accountDTO = new AccountDTO();
             modelMapper.map(account, accountDTO);
-//            accountDTO.setUserId(account.getUser().getId());
-//            accountDTO.setBranchId(account.getBranch().getId());
             accountDTOList.add(accountDTO);
             accountDTOList.add(mapperAcoountDTO(account));
         }

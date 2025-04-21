@@ -8,6 +8,7 @@ import com.task.demo.enums.Role;
 import com.task.demo.repository.UserRepository;
 import com.task.demo.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,9 +26,10 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public AuthResponseDTO register(RegisterDTO registerDTO) {
+    public void register(RegisterDTO registerDTO) {
         try {
             User user = new User();
+
             user.setFirstName(registerDTO.getFirstName());
             user.setLastName(registerDTO.getLastName());
             user.setAge(registerDTO.getAge());
@@ -40,8 +42,6 @@ public class AuthServiceImpl implements AuthService {
             }
 
             userRepository.save(user);
-            String token = jwtService.generateToken(user);
-            return new AuthResponseDTO(token);
 
         } catch (Exception e) {
             throw new RuntimeException("Qeydiyyat zamanı xəta baş verdi: " + e.getMessage());

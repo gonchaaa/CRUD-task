@@ -5,6 +5,8 @@ import com.task.demo.DTOs.request.RegisterDTO;
 import com.task.demo.DTOs.response.AuthResponseDTO;
 import com.task.demo.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +20,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDTO> register(@RequestBody RegisterDTO request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<Void> register(@RequestBody RegisterDTO request) {
+        authService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")

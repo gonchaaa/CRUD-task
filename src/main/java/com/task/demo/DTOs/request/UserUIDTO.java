@@ -24,5 +24,7 @@ public class UserUIDTO {
     private Integer age;
     @Email(message = "email duzgun deyil")
     private String email;
+    @NotBlank(message = "password bos ola bilmez")
+    private String password;
     private Date birthDate;
 }

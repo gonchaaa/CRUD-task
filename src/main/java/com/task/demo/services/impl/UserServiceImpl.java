@@ -29,19 +29,6 @@ public class UserServiceImpl implements UserServcie {
     private final ModelMapper modelMapper;
 
     @Override
-    public UserDTO saveUser(UserUIDTO userUIDTO) {
-
-        UserDTO userDTO = new UserDTO();
-        User user = new User();
-        modelMapper.map(userUIDTO,user);
-
-        user.setRole(Role.USER);
-        User dbUser = userRepository.save(user);
-        modelMapper.map(dbUser,userDTO);
-        return userDTO;
-    }
-
-    @Override
     public List<UserDTO> getAllUsers() {
         List<UserDTO> userDTOList = new ArrayList<>();
         List<User> users = userRepository.findAll();
@@ -57,7 +44,7 @@ public class UserServiceImpl implements UserServcie {
     }
 
     @Override
-    public UserDTO getUserById(Integer id) {
+    public UserDTO getUserById(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isPresent()){
             UserDTO userDTO = new UserDTO();
@@ -76,7 +63,7 @@ public class UserServiceImpl implements UserServcie {
     }
 
     @Override
-    public String deleteUserById(Integer id) {
+    public String deleteUserById(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isPresent()){
             userRepository.deleteById(id);
@@ -87,7 +74,7 @@ public class UserServiceImpl implements UserServcie {
     }
 
     @Override
-    public UserDTO updateUser(Integer id, UserUIDTO userUIDTO) {
+    public UserDTO updateUser(Long id, UserUIDTO userUIDTO) {
         UserDTO userDTO = new UserDTO();
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isPresent()){

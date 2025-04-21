@@ -8,10 +8,9 @@ import com.task.demo.entities.User;
 import java.util.List;
 
 public interface UserServcie {
-     UserDTO saveUser(UserUIDTO userUIDTO);
      List<UserDTO> getAllUsers();
-     UserDTO getUserById(Integer id);
+     UserDTO getUserById(Long id);
      List<User> getUserFilter(UserFilterDTO userFilterDTO);
-     String deleteUserById(Integer id);
-     UserDTO updateUser (Integer id,UserUIDTO userUIDTO);
+     String deleteUserById(Long id);
+     UserDTO updateUser (Long id,UserUIDTO userUIDTO);
 }

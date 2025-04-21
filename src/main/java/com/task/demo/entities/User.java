@@ -38,13 +38,15 @@ public class User {
     @Email(message = "email duzgun deyil")
     @Column(name = "email",nullable = false)
     private String email;
+    @Column(name = "password",nullable = false)
+    private String password;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "birth_Date",nullable = true)
     private Date birthDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role",nullable = false)
-
     private Role role;
 
 }

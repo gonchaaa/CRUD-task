@@ -48,12 +48,11 @@ public class AccountServcieImpl implements AccountServcie {
 
     @Override
     public AccountDTO saveAccount(@Valid AccountInsertDTO accountInsertDTO) {
-        User user = userRepository.findById(Math.toIntExact(accountInsertDTO.getUserId())).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
+        User user = userRepository.findById(accountInsertDTO.getUserId()).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
         Branch branch = branchRepository.findById(accountInsertDTO.getBranchId()).orElseThrow(() -> new EntityNotFoundException("Bele bir filial yoxdur"));
-
             Account account = new Account();
-            modelMapper.map(accountInsertDTO, account);
-
+//            modelMapper.map(accountInsertDTO, account);
+            account.setIban(accountInsertDTO.getIban());
             account.setUser(user);
             account.setBranch(branch);
             account.setAccountNumber(generatorAccountNumber());
@@ -144,7 +143,7 @@ public class AccountServcieImpl implements AccountServcie {
 
     @Override
     public List<AccountDTO> getAccountByUserId(Long userId) {
-        User user = userRepository.findById(Math.toIntExact(userId)).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
         List<AccountDTO> accountDTOList = new ArrayList<>();
         List<Account> accounts = accountRepository.findAllByUser(user);
         for (Account account : accounts) {

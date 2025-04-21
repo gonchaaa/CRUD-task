@@ -14,16 +14,11 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/rest/api/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserServcie userServcie;
-
-    @PostMapping()
-    public UserDTO saveUser(@RequestBody @Valid UserUIDTO userUIDTO) {
-        return userServcie.saveUser(userUIDTO);
-    }
 
     @GetMapping(path = "/get-all-users")
     public List<UserDTO> getAllUsers() {
@@ -31,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/get-user/{id}")
-    public UserDTO getUserById(@PathVariable(name = "id") Integer id) {
+    public UserDTO getUserById(@PathVariable(name = "id") Long id) {
         return userServcie.getUserById(id);
     }
 
@@ -49,13 +44,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUserById(@PathVariable(name = "id") Integer id) {
+    public String deleteUserById(@PathVariable(name = "id") Long id) {
 
        return userServcie.deleteUserById(id);
     }
 
     @PutMapping("/{id}")
-    public UserDTO updateUser(@PathVariable(name = "id") Integer id,@RequestBody UserUIDTO userUIDTO) {
+    public UserDTO updateUser(@PathVariable(name = "id") Long id,@RequestBody UserUIDTO userUIDTO) {
     return userServcie.updateUser(id, userUIDTO);
     }
 }

@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
 
-
     private final AccountServcie accountServcie;
 
     @PostMapping()
@@ -46,6 +45,7 @@ public class AccountController {
 
         return accountServcie.getAllAccount();
     }
+
 
     @GetMapping(path = "/get-user-account/{id}")
     public List<AccountDTO> getAccountByUserId(@PathVariable(name="id") Long userId) {

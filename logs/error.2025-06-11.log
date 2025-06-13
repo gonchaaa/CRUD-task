@@ -1,11 +1,11 @@
-2025-06-12 12:48:11 ERROR [http-nio-9090-exec-4] o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
-io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-06-11T14:00:03Z. Current time: 2025-06-12T08:48:11Z, a difference of 67688400 milliseconds.  Allowed clock skew: 0 milliseconds.
+2025-06-11 16:03:26 ERROR [http-nio-9090-exec-2] o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-05-15T13:18:00Z. Current time: 2025-06-11T12:03:26Z, a difference of 2328326206 milliseconds.  Allowed clock skew: 0 milliseconds.
 	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:427)
 	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:529)
 	at io.jsonwebtoken.impl.DefaultJwtParser.parseClaimsJws(DefaultJwtParser.java:589)
 	at io.jsonwebtoken.impl.ImmutableJwtParser.parseClaimsJws(ImmutableJwtParser.java:173)
-	at com.task.demo.services.impl.JwtService.exportToken(JwtService.java:30)
-	at com.task.demo.services.impl.JwtService.findUsername(JwtService.java:23)
+	at com.task.demo.services.impl.JwtService.exportToken(JwtService.java:29)
+	at com.task.demo.services.impl.JwtService.findUsername(JwtService.java:22)
 	at com.task.demo.security.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:33)
 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
 	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
@@ -64,3 +64,5 @@ io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-06-11T14:00:03Z. Curren
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:840)
+2025-06-11 17:12:22 ERROR [http-nio-9090-exec-8] o.h.e.jdbc.spi.SqlExceptionHelper - ОШИБКА: повторяющееся значение ключа нарушает ограничение уникальности "ukcuc1pxk2ofct9xra2nm0oon"
+  Detail: Ключ "(iban)=(AZ21NABZ00000000137010001997)" уже существует.

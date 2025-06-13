@@ -35,12 +35,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false)
     private Status status;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-
     @ManyToOne
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;

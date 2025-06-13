@@ -61,8 +61,6 @@ public class AccountServcieImpl implements AccountServcie {
             account.setExpiredDate(LocalDate.now().plusYears(5));
             try {
                 Account dbAccount = accountRepository.save(account);
-
-
                 AccountDTO accountDTO = new AccountDTO();
                 modelMapper.map(dbAccount, accountDTO);
                 mapperAcoountDTO(account);
@@ -131,15 +129,18 @@ public class AccountServcieImpl implements AccountServcie {
 
     @Override
     public List<AccountDTO> getAccountByUserId(Long userId) {
+        System.out.println("User ID: " + userId);
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Bele bir istifadeci yoxdur"));
         List<AccountDTO> accountDTOList = new ArrayList<>();
         List<Account> accounts = accountRepository.findAllByUser(user);
+        System.out.println("Accounts found: " + accounts.size());
         for (Account account : accounts) {
             AccountDTO accountDTO = new AccountDTO();
             modelMapper.map(account, accountDTO);
             accountDTOList.add(accountDTO);
             accountDTOList.add(mapperAcoountDTO(account));
         }
+        System.out.println("Account DTOs created: " + accountDTOList.size());
         return accountDTOList;
     }
 
